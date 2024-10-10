@@ -1,5 +1,5 @@
 export type Env = {
-    [K in `BUCKET_${string}`]: R2Bucket;
+    BUCKET: R2Bucket;
 };
 
 export interface SiteConfig {
