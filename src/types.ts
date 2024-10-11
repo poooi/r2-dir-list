@@ -1,5 +1,6 @@
 export type Env = {
-    BUCKET: R2Bucket;
+    BUCKET_POI_DB: R2Bucket;
+    BUCKET_POI_NIGHTLIES: R2Bucket;
 };
 
 export interface SiteConfig {
