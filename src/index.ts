@@ -85,7 +85,13 @@ export default {
         if (files.length === 0 && folders.length === 0 && originResponse.status === 404) {
             return originResponse;
         }
-        const Response = await env.FRONTEND.fetch(request)
-        return Response;
+        const response = await env.FRONTEND.fetch(request)
+
+        return new Response(response.body, {
+            headers: {
+                ...response.headers,
+                'content-encoding': 'gzip',
+            }
+        })
     },
 };
