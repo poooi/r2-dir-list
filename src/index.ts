@@ -51,11 +51,13 @@ function shouldReturnOriginResponse(originResponse: Response, siteConfig: SiteCo
 
 export default {
     async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-        const originResponse = await fetch(request);
-
         const url = new URL(request.url);
         const domain = url.hostname;
-        const path = url.pathname;
+        const pathname = url.pathname;
+        if (pathname === '/favicon.ico' || pathname.startsWith('/_next') || url.searchParams.has('_rsc')) {
+            return await env.FRONTEND.fetch(request);
+        }
+        const originResponse = await fetch(new Request(request));
 
         const siteConfig = getSiteConfig(env, domain);
         if (!siteConfig) {
@@ -63,7 +65,7 @@ export default {
             return originResponse;
         }
         // remove the leading '/'
-        const objectKey = siteConfig.decodeURI ? decodeURIComponent(path.slice(1)) : path.slice(1);
+        const objectKey = siteConfig.decodeURI ? decodeURIComponent(pathname.slice(1)) : pathname.slice(1);
 
         if (shouldReturnOriginResponse(originResponse, siteConfig)) {
             return originResponse;
@@ -83,11 +85,7 @@ export default {
         if (files.length === 0 && folders.length === 0 && originResponse.status === 404) {
             return originResponse;
         }
-        return new Response(renderTemplFull(files, folders, '/' + objectKey, siteConfig), {
-            headers: {
-                'Content-Type': 'text/html; charset=utf-8',
-            },
-            status: 200,
-        });
+        const Response = await env.FRONTEND.fetch(request)
+        return Response;
     },
 };

@@ -1,6 +1,7 @@
 name = "r2-dir-list"
 main = "src/index.ts"
 compatibility_date = "2023-03-01"
+account_id = "2dc3483aa62d4b5dc774ec04713893de"
 
 workers_dev = false
 routes = [
@@ -14,3 +15,10 @@ r2_buckets  = [
     { binding = "BUCKET_POI_DB", bucket_name = "poi-db"},
     { binding = "BUCKET_POI_NIGHTLIES", bucket_name = "poi-nightlies"},
 ]
+
+services = [
+  { binding = "FRONTEND", service = "r2-dir-list-frontend" }
+]
+
+[observability]
+enabled = true
